@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   BadgeCheck,
   BedDouble,
@@ -20,8 +20,10 @@ import {
   Sparkles,
   Star,
   Target,
+  TimerReset,
   Trophy,
   Utensils,
+  UsersRound,
   WalletCards,
   Zap,
 } from "lucide-react";
@@ -106,6 +108,12 @@ const copy = {
     strongest: "الخيار الأقوى",
     plansTitle: "اختار باقتك",
     plansSub: "نفس الأسعار الحالية · كل الباقات متاحة بالمصري والدولار",
+    saleKicker: "عرض فتح دفعة جديدة",
+    saleTitle: "خصم اليوم + مراجعة فورم مجانية لأول 12 مشترك",
+    saleSub: "العداد بيقفل تلقائياً عشان نحدد عدد المتابعة اليومية ونضمن جودة النتيجة.",
+    saleTimer: "ينتهي خلال",
+    saleSpots: "أماكن متبقية",
+    saleBonus: "بونص مجاني",
     month: "شهر",
     twoMonths: "شهرين",
     threeMonths: "3 شهور",
@@ -161,6 +169,12 @@ const copy = {
     strongest: "Ultimate choice",
     plansTitle: "Choose your plan",
     plansSub: "Same current prices · Switch instantly between EGP and USD",
+    saleKicker: "New batch offer",
+    saleTitle: "Today discount + free form review for the first 12 signups",
+    saleSub: "The timer closes automatically so daily coaching stays personal and high quality.",
+    saleTimer: "Ends in",
+    saleSpots: "Spots left",
+    saleBonus: "Free bonus",
     month: "1 Month",
     twoMonths: "2 Months",
     threeMonths: "3 Months",
