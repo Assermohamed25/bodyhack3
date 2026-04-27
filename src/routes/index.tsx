@@ -117,7 +117,7 @@ const copy = {
     month: "شهر",
     twoMonths: "شهرين",
     threeMonths: "3 شهور",
-    book: "احجز الآن",
+    book: "ادفع الآن",
     paymentTitle: "طرق الدفع",
     paymentSub: "اختار المحفظة، انسخ الرقم، حوّل، وابعت الإيصال على الواتساب.",
     transfer: "رقم التحويل",
@@ -125,7 +125,7 @@ const copy = {
     openWallet: "افتح كود التحويل",
     copied: "تم النسخ",
     copy: "نسخ الرقم",
-    receipt: "ابعت الإيصال واتساب",
+    receipt: "تم الدفع · ابعت الإسكرين",
     reviewsTitle: "آراء العملاء",
     reviewsSub: "50 تقييم من دول عربية مختلفة — يظهر 10 والباقي عرض المزيد.",
     showMore: "عرض المزيد",
@@ -180,7 +180,7 @@ const copy = {
     month: "1 Month",
     twoMonths: "2 Months",
     threeMonths: "3 Months",
-    book: "Book now",
+    book: "Pay now",
     paymentTitle: "Payment methods",
     paymentSub: "Choose a wallet, copy the number, transfer, then send the receipt on WhatsApp.",
     transfer: "Transfer number",
@@ -188,7 +188,7 @@ const copy = {
     openWallet: "Open transfer code",
     copied: "Copied",
     copy: "Copy number",
-    receipt: "Send receipt",
+    receipt: "Paid · Send screenshot",
     reviewsTitle: "Client reviews",
     reviewsSub: "50 reviews from Arab countries — 10 shown first, the rest with show more.",
     showMore: "Show more",
@@ -505,7 +505,7 @@ function Index() {
             <p className="mt-2 font-display text-5xl text-fire">{transferNumber}</p>
             <p className="mt-3 text-sm font-bold text-muted-foreground">{t.walletCode}</p>
             <p className="mt-1 rounded-lg border border-fire/40 bg-background px-4 py-3 font-display text-3xl text-gold">{selectedWalletData.code}</p>
-            <p className="mt-3 text-sm text-muted-foreground">{lang === "ar" ? "حوّل القيمة ثم صوّر الإيصال وابعتها واتساب." : "Transfer the amount, screenshot the receipt, then send it on WhatsApp."}</p>
+             <p className="mt-3 text-sm text-muted-foreground">{lang === "ar" ? "بعد ما تحول اضغط تم الدفع، واتساب هيفتح برسالة جاهزة وابعت سكرين الإيصال." : "After transfer, tap paid, WhatsApp opens with a ready message, then send the receipt screenshot."}</p>
           </div>
           <div className="flex flex-col gap-3">
             <button onClick={openWallet} className="inline-flex items-center justify-center gap-2 rounded-full bg-primary px-5 py-3 font-bold text-primary-foreground shadow-fire transition hover:scale-105">
@@ -514,7 +514,7 @@ function Index() {
             <button onClick={handleCopy} className="inline-flex items-center justify-center gap-2 rounded-full border border-border px-5 py-3 font-bold transition hover:border-fire hover:text-fire">
               {copied ? <Check className="size-5" /> : <Copy className="size-5" />} {copied ? t.copied : t.copy}
             </button>
-            <a href={wa(lang === "ar" ? `حوّلت على ${selectedWallet} ودي صورة الإيصال` : `I transferred via ${selectedWallet}. Here is the receipt.`)} className="inline-flex items-center justify-center gap-2 rounded-full bg-primary px-5 py-3 font-bold text-primary-foreground shadow-fire transition hover:scale-105">
+            <a href={wa(lang === "ar" ? `تم الدفع على ${selectedWallet} لرقم ${transferNumber}. دي صورة الإيصال، برجاء تأكيد الاشتراك وإرسال الخطوة التالية.` : `Payment completed via ${selectedWallet} to ${transferNumber}. Here is the receipt screenshot. Please confirm my subscription and send the next step.`)} className="inline-flex items-center justify-center gap-2 rounded-full bg-primary px-5 py-3 font-bold text-primary-foreground shadow-fire transition hover:scale-105">
               <Send className="size-5" /> {t.receipt}
             </a>
           </div>
@@ -697,7 +697,7 @@ function PricingBlock({ lang, t, currency, setCurrency, duration, setDuration, r
               <ul className="mt-5 space-y-3 text-sm text-muted-foreground">
                 {(lang === "ar" ? plan.featuresAr : plan.featuresEn).map((f) => <li key={f} className="flex gap-2"><Check className="mt-0.5 size-4 shrink-0 text-fire" /> {f}</li>)}
               </ul>
-              <a href={wa(lang === "ar" ? `مرحباً، عايز أشترك في باقة ${plan.name} - المدة ${duration} - هدفي ${goal === "cut" ? "تنشيف" : "تضخيم"} - السعر ${formatPrice(plan.prices[duration])}` : `Hi, I want to subscribe to ${plan.name} - duration ${duration} - goal ${goal} - price ${formatPrice(plan.prices[duration])}`)} className="mt-6 inline-flex w-full items-center justify-center rounded-full bg-primary px-5 py-3 font-bold text-primary-foreground shadow-fire transition hover:scale-105">
+              <a href="#payments" className="mt-6 inline-flex w-full items-center justify-center rounded-full bg-primary px-5 py-3 font-bold text-primary-foreground shadow-fire transition hover:scale-105" onClick={() => setDuration(duration)}>
                 {t.book}
               </a>
               <a href="/subscribe" className="mt-3 inline-flex w-full items-center justify-center rounded-full border border-fire/60 px-5 py-3 font-bold text-fire transition hover:bg-secondary">
