@@ -700,9 +700,6 @@ function PricingBlock({ lang, t, currency, setCurrency, duration, setDuration, r
               <a href="#payments" className="mt-6 inline-flex w-full items-center justify-center rounded-full bg-primary px-5 py-3 font-bold text-primary-foreground shadow-fire transition hover:scale-105" onClick={() => setDuration(duration)}>
                 {t.book}
               </a>
-              <a href="/subscribe" className="mt-3 inline-flex w-full items-center justify-center rounded-full border border-fire/60 px-5 py-3 font-bold text-fire transition hover:bg-secondary">
-                {lang === "ar" ? "املأ فورم الاشتراك" : "Fill subscription form"}
-              </a>
             </article>
           );
         })}
