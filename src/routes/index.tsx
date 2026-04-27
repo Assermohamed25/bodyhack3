@@ -266,11 +266,11 @@ const packages: Array<{
 ];
 
 const wallets = [
-  { name: "InstaPay", icon: WalletCards },
-  { name: "Vodafone Cash", icon: Zap },
-  { name: "WE Pay", icon: ShieldCheck },
-  { name: "Orange Cash", icon: Flame },
-  { name: "Etisalat Cash", icon: Target },
+  { name: "InstaPay", icon: WalletCards, code: `instapay://transfer?mobile=${transferNumber}`, fallback: `https://wa.me/${whatsapp}?text=${encodeURIComponent(`عايز أحول Instapay على رقم ${transferNumber}`)}` },
+  { name: "Vodafone Cash", icon: Zap, code: `*9*7*${transferNumber}#`, fallback: `tel:${encodeURIComponent(`*9*7*${transferNumber}#`)}` },
+  { name: "WE Pay", icon: ShieldCheck, code: `*551*${transferNumber}#`, fallback: `tel:${encodeURIComponent(`*551*${transferNumber}#`)}` },
+  { name: "Orange Cash", icon: Flame, code: `#115#`, fallback: `tel:${encodeURIComponent(`#115#`)}` },
+  { name: "Etisalat Cash", icon: Target, code: `*777*${transferNumber}#`, fallback: `tel:${encodeURIComponent(`*777*${transferNumber}#`)}` },
 ];
 
 const reviewsAr = [
