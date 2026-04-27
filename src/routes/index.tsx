@@ -322,6 +322,7 @@ function Index() {
   const storyRef = useRef<HTMLDivElement>(null);
   const t = copy[lang];
   const rtl = lang === "ar";
+  const selectedWalletData = wallets.find((wallet) => wallet.name === selectedWallet) || wallets[0];
 
   const recommended = useMemo<PackageName>(() => {
     const score = commitment + budget + speed + (goal === "bulk" ? 1 : 0);
@@ -340,6 +341,10 @@ function Index() {
     await navigator.clipboard.writeText(transferNumber);
     setCopied(true);
     window.setTimeout(() => setCopied(false), 1400);
+  };
+  const openWallet = () => {
+    navigator.clipboard.writeText(transferNumber).catch(() => undefined);
+    window.location.href = selectedWalletData.fallback;
   };
 
   if (!goal) {
