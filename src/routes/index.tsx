@@ -686,9 +686,6 @@ function PricingBlock({ lang, t, currency, setCurrency, duration, setDuration, r
               <a href={wa(lang === "ar" ? `مرحباً، عايز أشترك في باقة ${plan.name} - المدة ${duration} - هدفي ${goal === "cut" ? "تنشيف" : "تضخيم"} - السعر ${formatPrice(plan.prices[duration])}` : `Hi, I want to subscribe to ${plan.name} - duration ${duration} - goal ${goal} - price ${formatPrice(plan.prices[duration])}`)} className="mt-6 inline-flex w-full items-center justify-center rounded-full bg-primary px-5 py-3 font-bold text-primary-foreground shadow-fire transition hover:scale-105">
                 {t.book}
               </a>
-              <a href="/subscribe" className="mt-3 inline-flex w-full items-center justify-center rounded-full border border-fire/60 px-5 py-3 font-bold text-fire transition hover:bg-secondary">
-                {lang === "ar" ? "املأ فورم الاشتراك" : "Fill subscription form"}
-              </a>
             </article>
           );
         })}
