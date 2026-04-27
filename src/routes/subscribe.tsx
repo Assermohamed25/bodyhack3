@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { ArrowLeft, ArrowRight, Check, Dumbbell, Flame, Gamepad2, MessageCircle, Send, Trophy } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, Dumbbell, Flame, Gamepad2, MessageCircle, Send, Trophy, type LucideIcon } from "lucide-react";
 
 import heroAthlete from "@/assets/bodyhack-athlete-hero.jpg";
 
@@ -25,7 +25,7 @@ type Field = {
   placeholder?: string;
 };
 
-type Step = { title: string; icon: typeof Flame; fields: Field[] };
+type Step = { title: string; icon: LucideIcon; fields: Field[] };
 type Answers = Record<string, string | string[]>;
 
 const whatsappNumber = "2010557707038";
@@ -134,6 +134,7 @@ function SubscribePage() {
   const [answers, setAnswers] = useState<Answers>({});
   const [errors, setErrors] = useState<string[]>([]);
   const step = steps[stepIndex];
+  const StepIcon = step.icon;
   const progress = Math.round(((stepIndex + 1) / steps.length) * 100);
   const requiredMissing = useMemo(() => step.fields.filter((field) => field.required && !valueToText(answers[field.id])).map((field) => field.label), [answers, step]);
 
@@ -194,7 +195,7 @@ function SubscribePage() {
               <p className="text-sm font-black uppercase text-fire">Step {stepIndex + 1} / {steps.length}</p>
               <h2 className="mt-1 text-3xl font-black md:text-4xl">{step.title}</h2>
             </div>
-            <step.icon className="size-11 text-fire" />
+            <StepIcon className="size-11 text-fire" />
           </div>
 
           {errors.length > 0 && <div className="mb-5 rounded-xl border border-destructive bg-secondary p-4 text-sm font-bold text-destructive">كمل المطلوب: {errors.join("، ")}</div>}
