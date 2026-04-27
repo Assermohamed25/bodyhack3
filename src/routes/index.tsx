@@ -503,9 +503,14 @@ function Index() {
           <div>
             <p className="text-sm text-muted-foreground">{selectedWallet} · {t.transfer}</p>
             <p className="mt-2 font-display text-5xl text-fire">{transferNumber}</p>
+            <p className="mt-3 text-sm font-bold text-muted-foreground">{t.walletCode}</p>
+            <p className="mt-1 rounded-lg border border-fire/40 bg-background px-4 py-3 font-display text-3xl text-gold">{selectedWalletData.code}</p>
             <p className="mt-3 text-sm text-muted-foreground">{lang === "ar" ? "حوّل القيمة ثم صوّر الإيصال وابعتها واتساب." : "Transfer the amount, screenshot the receipt, then send it on WhatsApp."}</p>
           </div>
           <div className="flex flex-col gap-3">
+            <button onClick={openWallet} className="inline-flex items-center justify-center gap-2 rounded-full bg-primary px-5 py-3 font-bold text-primary-foreground shadow-fire transition hover:scale-105">
+              <WalletCards className="size-5" /> {t.openWallet}
+            </button>
             <button onClick={handleCopy} className="inline-flex items-center justify-center gap-2 rounded-full border border-border px-5 py-3 font-bold transition hover:border-fire hover:text-fire">
               {copied ? <Check className="size-5" /> : <Copy className="size-5" />} {copied ? t.copied : t.copy}
             </button>
