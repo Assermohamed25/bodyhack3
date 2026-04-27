@@ -671,6 +671,9 @@ function PricingBlock({ lang, t, currency, setCurrency, duration, setDuration, r
               <div className="mt-4">
                 <span className="text-sm text-muted-foreground line-through">{formatPrice(plan.old[duration])}</span>
                 <strong className="block font-display text-5xl text-fire">{formatPrice(plan.prices[duration])}</strong>
+                <span className="mt-2 inline-flex rounded-full border border-fire/50 bg-secondary px-3 py-1 text-xs font-black text-fire">
+                  {t.saleBonus}: {lang === "ar" ? "تقييم فورم + تعديل دايت" : "Form check + diet tweak"}
+                </span>
               </div>
               <ul className="mt-5 space-y-3 text-sm text-muted-foreground">
                 {(lang === "ar" ? plan.featuresAr : plan.featuresEn).map((f) => <li key={f} className="flex gap-2"><Check className="mt-0.5 size-4 shrink-0 text-fire" /> {f}</li>)}
