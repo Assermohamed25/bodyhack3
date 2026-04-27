@@ -121,6 +121,8 @@ const copy = {
     paymentTitle: "طرق الدفع",
     paymentSub: "اختار المحفظة، انسخ الرقم، حوّل، وابعت الإيصال على الواتساب.",
     transfer: "رقم التحويل",
+    walletCode: "كود التحويل",
+    openWallet: "افتح كود التحويل",
     copied: "تم النسخ",
     copy: "نسخ الرقم",
     receipt: "ابعت الإيصال واتساب",
@@ -182,6 +184,8 @@ const copy = {
     paymentTitle: "Payment methods",
     paymentSub: "Choose a wallet, copy the number, transfer, then send the receipt on WhatsApp.",
     transfer: "Transfer number",
+    walletCode: "Transfer code",
+    openWallet: "Open transfer code",
     copied: "Copied",
     copy: "Copy number",
     receipt: "Send receipt",
@@ -262,11 +266,11 @@ const packages: Array<{
 ];
 
 const wallets = [
-  { name: "InstaPay", icon: WalletCards },
-  { name: "Vodafone Cash", icon: Zap },
-  { name: "WE Pay", icon: ShieldCheck },
-  { name: "Orange Cash", icon: Flame },
-  { name: "Etisalat Cash", icon: Target },
+  { name: "InstaPay", icon: WalletCards, code: `instapay://transfer?mobile=${transferNumber}`, fallback: `https://wa.me/${whatsapp}?text=${encodeURIComponent(`عايز أحول Instapay على رقم ${transferNumber}`)}` },
+  { name: "Vodafone Cash", icon: Zap, code: `*9*7*${transferNumber}#`, fallback: `tel:${encodeURIComponent(`*9*7*${transferNumber}#`)}` },
+  { name: "WE Pay", icon: ShieldCheck, code: `*551*${transferNumber}#`, fallback: `tel:${encodeURIComponent(`*551*${transferNumber}#`)}` },
+  { name: "Orange Cash", icon: Flame, code: `#115#`, fallback: `tel:${encodeURIComponent(`#115#`)}` },
+  { name: "Etisalat Cash", icon: Target, code: `*777*${transferNumber}#`, fallback: `tel:${encodeURIComponent(`*777*${transferNumber}#`)}` },
 ];
 
 const reviewsAr = [
@@ -318,6 +322,7 @@ function Index() {
   const storyRef = useRef<HTMLDivElement>(null);
   const t = copy[lang];
   const rtl = lang === "ar";
+  const selectedWalletData = wallets.find((wallet) => wallet.name === selectedWallet) || wallets[0];
 
   const recommended = useMemo<PackageName>(() => {
     const score = commitment + budget + speed + (goal === "bulk" ? 1 : 0);
@@ -336,6 +341,10 @@ function Index() {
     await navigator.clipboard.writeText(transferNumber);
     setCopied(true);
     window.setTimeout(() => setCopied(false), 1400);
+  };
+  const openWallet = () => {
+    navigator.clipboard.writeText(transferNumber).catch(() => undefined);
+    window.location.href = selectedWalletData.fallback;
   };
 
   if (!goal) {
@@ -494,9 +503,14 @@ function Index() {
           <div>
             <p className="text-sm text-muted-foreground">{selectedWallet} · {t.transfer}</p>
             <p className="mt-2 font-display text-5xl text-fire">{transferNumber}</p>
+            <p className="mt-3 text-sm font-bold text-muted-foreground">{t.walletCode}</p>
+            <p className="mt-1 rounded-lg border border-fire/40 bg-background px-4 py-3 font-display text-3xl text-gold">{selectedWalletData.code}</p>
             <p className="mt-3 text-sm text-muted-foreground">{lang === "ar" ? "حوّل القيمة ثم صوّر الإيصال وابعتها واتساب." : "Transfer the amount, screenshot the receipt, then send it on WhatsApp."}</p>
           </div>
           <div className="flex flex-col gap-3">
+            <button onClick={openWallet} className="inline-flex items-center justify-center gap-2 rounded-full bg-primary px-5 py-3 font-bold text-primary-foreground shadow-fire transition hover:scale-105">
+              <WalletCards className="size-5" /> {t.openWallet}
+            </button>
             <button onClick={handleCopy} className="inline-flex items-center justify-center gap-2 rounded-full border border-border px-5 py-3 font-bold transition hover:border-fire hover:text-fire">
               {copied ? <Check className="size-5" /> : <Copy className="size-5" />} {copied ? t.copied : t.copy}
             </button>
@@ -685,6 +699,9 @@ function PricingBlock({ lang, t, currency, setCurrency, duration, setDuration, r
               </ul>
               <a href={wa(lang === "ar" ? `مرحباً، عايز أشترك في باقة ${plan.name} - المدة ${duration} - هدفي ${goal === "cut" ? "تنشيف" : "تضخيم"} - السعر ${formatPrice(plan.prices[duration])}` : `Hi, I want to subscribe to ${plan.name} - duration ${duration} - goal ${goal} - price ${formatPrice(plan.prices[duration])}`)} className="mt-6 inline-flex w-full items-center justify-center rounded-full bg-primary px-5 py-3 font-bold text-primary-foreground shadow-fire transition hover:scale-105">
                 {t.book}
+              </a>
+              <a href="/subscribe" className="mt-3 inline-flex w-full items-center justify-center rounded-full border border-fire/60 px-5 py-3 font-bold text-fire transition hover:bg-secondary">
+                {lang === "ar" ? "املأ فورم الاشتراك" : "Fill subscription form"}
               </a>
             </article>
           );
