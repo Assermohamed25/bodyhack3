@@ -611,6 +611,20 @@ function QuizGroup({ title, values, value, setValue }: { title: string; values: 
 }
 
 function PricingBlock({ lang, t, currency, setCurrency, duration, setDuration, recommended, formatPrice, wa, goal }: { lang: Lang; t: typeof copy.ar; currency: Currency; setCurrency: (c: Currency) => void; duration: Duration; setDuration: (d: Duration) => void; recommended: PackageName; formatPrice: (p: number) => string; wa: (text: string) => string; goal: Goal }) {
+  const [secondsLeft, setSecondsLeft] = useState(11 * 60 * 60 + 47 * 60 + 22);
+  const spotsLeft = goal === "cut" ? 7 : 5;
+  const timeLeft = useMemo(() => {
+    const hours = Math.floor(secondsLeft / 3600).toString().padStart(2, "0");
+    const minutes = Math.floor((secondsLeft % 3600) / 60).toString().padStart(2, "0");
+    const seconds = Math.floor(secondsLeft % 60).toString().padStart(2, "0");
+    return `${hours}:${minutes}:${seconds}`;
+  }, [secondsLeft]);
+
+  useEffect(() => {
+    const timer = window.setInterval(() => setSecondsLeft((value) => Math.max(0, value - 1)), 1000);
+    return () => window.clearInterval(timer);
+  }, []);
+
   return (
     <div id="plans">
       <div className="flex flex-wrap items-end justify-between gap-4">
@@ -627,6 +641,23 @@ function PricingBlock({ lang, t, currency, setCurrency, duration, setDuration, r
             {d === "1" ? t.month : d === "2" ? t.twoMonths : t.threeMonths}
           </button>
         ))}
+      </div>
+      <div className="sale-strip mt-5 overflow-hidden rounded-xl border border-fire/60 bg-secondary p-4 shadow-fire">
+        <div className="grid items-center gap-4 md:grid-cols-[1fr_auto_auto]">
+          <div>
+            <p className="text-xs font-black uppercase text-fire">{t.saleKicker}</p>
+            <h3 className="mt-1 text-xl font-black md:text-2xl">{t.saleTitle}</h3>
+            <p className="mt-1 text-sm text-muted-foreground">{t.saleSub}</p>
+          </div>
+          <div className="rounded-lg border border-fire/50 bg-background/70 px-4 py-3 text-center">
+            <span className="flex items-center justify-center gap-2 text-xs font-bold text-muted-foreground"><TimerReset className="size-4 text-fire" /> {t.saleTimer}</span>
+            <strong className="mt-1 block font-display text-3xl text-fire">{timeLeft}</strong>
+          </div>
+          <div className="rounded-lg border border-gold/60 bg-background/70 px-4 py-3 text-center">
+            <span className="flex items-center justify-center gap-2 text-xs font-bold text-muted-foreground"><UsersRound className="size-4 text-gold" /> {t.saleSpots}</span>
+            <strong className="mt-1 block font-display text-3xl text-gold">{spotsLeft}/12</strong>
+          </div>
+        </div>
       </div>
       <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         {packages.map((plan) => {
