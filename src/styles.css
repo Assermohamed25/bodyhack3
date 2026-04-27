@@ -153,8 +153,82 @@
     border-color: var(--color-border);
   }
 
+  html {
+    scroll-behavior: smooth;
+  }
+
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    overflow-x: hidden;
+  }
+
+  ::selection {
+    background: var(--color-fire);
+    color: var(--color-fire-foreground);
+  }
+}
+
+@layer utilities {
+  .font-display {
+    font-family: var(--font-display);
+    letter-spacing: 0;
+  }
+
+  .bg-radial-fire {
+    background:
+      radial-gradient(circle at 50% 0%, oklch(0.68 0.23 39 / 28%), transparent 34rem),
+      radial-gradient(circle at 14% 18%, oklch(0.53 0.2 32 / 18%), transparent 18rem),
+      var(--color-background);
+  }
+
+  .grit-mask {
+    background-image:
+      linear-gradient(135deg, oklch(0.68 0.23 39 / 18%) 0 1px, transparent 1px 18px),
+      radial-gradient(circle, oklch(0.68 0.23 39 / 22%) 0 1px, transparent 1px 10px);
+  }
+
+  .clip-sport {
+    clip-path: polygon(0 0, 94% 0, 100% 12%, 100% 100%, 6% 100%, 0 88%);
+  }
+
+  .animate-rise {
+    animation: rise 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  .pulse-fire {
+    animation: pulse-fire 2.2s ease-in-out infinite;
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes pulse-fire {
+  0%, 100% {
+    box-shadow: 0 0 0 0 oklch(0.68 0.23 39 / 38%), var(--shadow-fire);
+  }
+  50% {
+    box-shadow: 0 0 0 10px oklch(0.68 0.23 39 / 0%), var(--shadow-fire);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .animate-rise,
+  .pulse-fire {
+    animation: none;
   }
 }
