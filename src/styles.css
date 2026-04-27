@@ -200,6 +200,19 @@
   .pulse-fire {
     animation: pulse-fire 2.2s ease-in-out infinite;
   }
+
+  .sale-strip {
+    position: relative;
+  }
+
+  .sale-strip::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(110deg, transparent 0%, oklch(0.68 0.23 39 / 0.22) 42%, transparent 58%);
+    animation: sale-sweep 3.4s ease-in-out infinite;
+    pointer-events: none;
+  }
 }
 
 @keyframes rise {
@@ -222,13 +235,27 @@
   }
 }
 
+@keyframes sale-sweep {
+  0%, 100% {
+    transform: translateX(-120%);
+    opacity: 0;
+  }
+  35%, 65% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(120%);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
   }
 
   .animate-rise,
-  .pulse-fire {
+  .pulse-fire,
+  .sale-strip::before {
     animation: none;
   }
 }
