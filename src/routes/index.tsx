@@ -697,7 +697,7 @@ function PricingBlock({ lang, t, currency, setCurrency, duration, setDuration, r
               <ul className="mt-5 space-y-3 text-sm text-muted-foreground">
                 {(lang === "ar" ? plan.featuresAr : plan.featuresEn).map((f) => <li key={f} className="flex gap-2"><Check className="mt-0.5 size-4 shrink-0 text-fire" /> {f}</li>)}
               </ul>
-              <a href={wa(lang === "ar" ? `مرحباً، عايز أشترك في باقة ${plan.name} - المدة ${duration} - هدفي ${goal === "cut" ? "تنشيف" : "تضخيم"} - السعر ${formatPrice(plan.prices[duration])}` : `Hi, I want to subscribe to ${plan.name} - duration ${duration} - goal ${goal} - price ${formatPrice(plan.prices[duration])}`)} className="mt-6 inline-flex w-full items-center justify-center rounded-full bg-primary px-5 py-3 font-bold text-primary-foreground shadow-fire transition hover:scale-105">
+              <a href="#payments" className="mt-6 inline-flex w-full items-center justify-center rounded-full bg-primary px-5 py-3 font-bold text-primary-foreground shadow-fire transition hover:scale-105" onClick={() => setDuration(duration)}>
                 {t.book}
               </a>
               <a href="/subscribe" className="mt-3 inline-flex w-full items-center justify-center rounded-full border border-fire/60 px-5 py-3 font-bold text-fire transition hover:bg-secondary">
