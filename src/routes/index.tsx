@@ -668,9 +668,14 @@ function PricingBlock({ lang, t, currency, setCurrency, duration, setDuration, r
               {plan.badge && <div className="mb-4 inline-flex items-center gap-1 rounded-full border border-fire/50 px-3 py-1 text-xs font-bold text-fire"><BadgeCheck className="size-4" />{plan.badge === "ultimate" ? t.strongest : "Most Popular"}</div>}
               <p className="text-xs font-black uppercase text-muted-foreground">Package</p>
               <h3 className="font-display text-4xl uppercase">{plan.name}</h3>
-              <div className="mt-4">
-                <span className="text-sm text-muted-foreground line-through">{formatPrice(plan.old[duration])}</span>
-                <strong className="block font-display text-5xl text-fire">{formatPrice(plan.prices[duration])}</strong>
+              <div className="mt-4 space-y-2">
+                {(["1", "2", "3"] as Duration[]).map((d) => (
+                  <button key={d} onClick={() => setDuration(d)} className={`w-full rounded-lg border p-3 text-start transition hover:border-fire ${duration === d ? "border-fire bg-secondary" : "border-border bg-background/50"}`}>
+                    <span className="block text-xs font-black text-muted-foreground">{d === "1" ? t.month : d === "2" ? t.twoMonths : t.threeMonths}</span>
+                    <span className="text-xs text-muted-foreground line-through">{formatPrice(plan.old[d])}</span>
+                    <strong className="block font-display text-3xl text-fire">{formatPrice(plan.prices[d])}</strong>
+                  </button>
+                ))}
                 <span className="mt-2 inline-flex rounded-full border border-fire/50 bg-secondary px-3 py-1 text-xs font-black text-fire">
                   {t.saleBonus}: {lang === "ar" ? "تقييم فورم + تعديل دايت" : "Form check + diet tweak"}
                 </span>
