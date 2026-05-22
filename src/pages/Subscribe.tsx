@@ -1,13 +1,9 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { Link } from "react-router-dom";
 import { useMemo, useState } from "react";
 import { ArrowLeft, ArrowRight, Check, Dumbbell, Flame, Gamepad2, MessageCircle, Send, Trophy, type LucideIcon } from "lucide-react";
 
 import heroAthlete from "@/assets/bodyhack-athlete-hero.jpg";
 
-export const Route = createFileRoute("/subscribe")({
-  head: () => ({ meta: [{ title: "Body Hack Subscription Form" }, { name: "description", content: "Body Hack interactive subscription form sent organized to WhatsApp." }] }),
-  component: SubscribePage,
-});
 
 type Field = { id: string; label: string; type: "text" | "number" | "date" | "textarea" | "select" | "multi" | "file"; options?: string[]; required?: boolean; placeholder?: string };
 type Step = { title: string; icon: LucideIcon; fields: Field[] };
@@ -59,3 +55,4 @@ function FieldControl({ field, value, onChange }: { field: Field; value: string 
 
 function valueToText(value: string | string[] | undefined) { if (Array.isArray(value)) return value.join("، ").trim(); return (value || "").trim(); }
 function buildMessage(answers: Answers) { const rows = steps.flatMap((step) => step.fields.map((field) => `• ${field.label}: ${valueToText(answers[field.id]) || "لم يحدد"}`)); return [`🔥 Body Hack - فورم اشتراك جديد`, `⏱️ Timestamp: ${new Date().toLocaleString("ar-EG")}`, "", ...rows, "", "ملاحظة: سيتم إرفاق الصور/التحاليل يدوياً في المحادثة."].join("\n").slice(0, 6500); }
+export default SubscribePage;

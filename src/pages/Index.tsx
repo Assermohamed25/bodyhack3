@@ -1,4 +1,3 @@
-import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   BadgeCheck,
@@ -40,24 +39,6 @@ import transformWide1 from "@/assets/transform-wide-1.jpeg";
 import transformWide2 from "@/assets/transform-wide-2.jpeg";
 import transform90c from "@/assets/transform-90c.jpeg";
 
-export const Route = createFileRoute("/")({
-  head: () => ({
-    meta: [
-      { title: "Body Hack Fitness | Online Coaching" },
-      {
-        name: "description",
-        content:
-          "Body Hack coaching plans for cutting, bulking, nutrition, workouts, Arabic reviews, wallet payments, and WhatsApp booking.",
-      },
-      { property: "og:title", content: "Body Hack Fitness | Online Coaching" },
-      {
-        property: "og:description",
-        content: "حوّل جسمك مع Body Hack: باقات تدريب وتغذية ومتابعة يومية ونتائج حقيقية.",
-      },
-    ],
-  }),
-  component: Index,
-});
 
 type Lang = "ar" | "en";
 type Goal = "cut" | "bulk";
@@ -715,3 +696,5 @@ function Social({ href, label, icon: Icon }: { href: string; label: string; icon
     </a>
   );
 }
+
+export default Index;
