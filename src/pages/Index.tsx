@@ -1,14 +1,18 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
+  Activity,
   BadgeCheck,
   BedDouble,
+  Calculator,
   Check,
   ChevronLeft,
   ChevronRight,
   Copy,
+  Drumstick,
   Dumbbell,
   Facebook,
   Flame,
+  HelpCircle,
   Instagram,
   Languages,
   MessageCircle,
@@ -24,8 +28,10 @@ import {
   Utensils,
   UsersRound,
   WalletCards,
+  X,
   Zap,
 } from "lucide-react";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
 import heroAthlete from "@/assets/bodyhack-athlete-hero.jpg";
 import transform75 from "@/assets/transform-75.jpeg";
