@@ -444,7 +444,7 @@ function Index() {
           <Brand compact />
           <nav className="hidden items-center gap-7 text-sm text-muted-foreground md:flex">
             {t.nav.map((item, index) => (
-              <a key={item} href={["#results", "#plans", "#payments", "#reviews", "#contact"][index]} className="transition hover:text-fire">
+              <a key={item} href={["#results", "#calculator", "#plans", "#compare", "#payments", "#reviews", "#faq", "#contact"][index]} className="transition hover:text-fire">
                 {item}
               </a>
             ))}
