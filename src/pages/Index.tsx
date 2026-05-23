@@ -532,6 +532,17 @@ function Index() {
       </section>
 
       <section className="mx-auto max-w-7xl px-5 py-10">
+        <SectionTitle kicker={t.baKicker} title={t.baTitle} subtitle={t.baSub} />
+        <div className="mt-8">
+          <BeforeAfterSlider before={transform75} after={transform150} lang={lang} />
+        </div>
+      </section>
+
+      <section id="calculator" className="mx-auto max-w-7xl px-5 py-14">
+        <BodyCalculator t={t} lang={lang} goal={goal} wa={wa} />
+      </section>
+
+      <section className="mx-auto max-w-7xl px-5 py-10">
         <div className="grid gap-6 lg:grid-cols-[0.8fr_1.2fr]">
           <div className="clip-sport border border-fire/50 bg-card p-6 shadow-fire">
             <SectionTitle kicker="Smart Recommendation" title={t.recommendTitle} compact />
@@ -543,6 +554,11 @@ function Index() {
           <PricingBlock lang={lang} t={t} currency={currency} setCurrency={setCurrency} duration={duration} setDuration={setDuration} recommended={recommended} formatPrice={formatPrice} wa={wa} goal={goal} />
         </div>
       </section>
+
+      <section id="compare" className="mx-auto max-w-7xl px-5 py-14">
+        <ComparisonTable t={t} lang={lang} recommended={recommended} />
+      </section>
+
 
       <section id="payments" className="mx-auto max-w-7xl px-5 py-14">
         <SectionTitle kicker="Payment Methods" title={t.paymentTitle} subtitle={t.paymentSub} />
