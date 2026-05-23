@@ -792,3 +792,255 @@ function Social({ href, label, icon: Icon }: { href: string; label: string; icon
 }
 
 export default Index;
+
+function BeforeAfterSlider({ before, after, lang }: { before: string; after: string; lang: Lang }) {
+  const [pos, setPos] = useState(50);
+  const ref = useRef<HTMLDivElement>(null);
+  const dragging = useRef(false);
+
+  const updateFromClientX = (clientX: number) => {
+    const el = ref.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const raw = ((clientX - rect.left) / rect.width) * 100;
+    setPos(Math.max(0, Math.min(100, raw)));
+  };
+
+  useEffect(() => {
+    const onMove = (event: MouseEvent | TouchEvent) => {
+      if (!dragging.current) return;
+      const clientX = "touches" in event ? event.touches[0].clientX : (event as MouseEvent).clientX;
+      updateFromClientX(clientX);
+    };
+    const onUp = () => (dragging.current = false);
+    window.addEventListener("mousemove", onMove);
+    window.addEventListener("touchmove", onMove);
+    window.addEventListener("mouseup", onUp);
+    window.addEventListener("touchend", onUp);
+    return () => {
+      window.removeEventListener("mousemove", onMove);
+      window.removeEventListener("touchmove", onMove);
+      window.removeEventListener("mouseup", onUp);
+      window.removeEventListener("touchend", onUp);
+    };
+  }, []);
+
+  return (
+    <div
+      ref={ref}
+      className="relative mx-auto aspect-[16/10] w-full max-w-4xl select-none overflow-hidden rounded-2xl border border-fire/60 shadow-fire"
+      onMouseDown={(event) => { dragging.current = true; updateFromClientX(event.clientX); }}
+      onTouchStart={(event) => { dragging.current = true; updateFromClientX(event.touches[0].clientX); }}
+    >
+      <img src={after} alt="After" className="absolute inset-0 h-full w-full object-cover" />
+      <div className="absolute inset-0 overflow-hidden" style={{ width: `${pos}%` }}>
+        <img src={before} alt="Before" className="absolute inset-0 h-full w-full object-cover" style={{ width: `${(100 / Math.max(pos, 0.01)) * 100}%`, maxWidth: "none" }} />
+      </div>
+      <div className="pointer-events-none absolute inset-y-0 z-10" style={{ left: `${pos}%`, transform: "translateX(-50%)" }}>
+        <div className="h-full w-1 bg-fire shadow-fire" />
+        <div className="absolute top-1/2 left-1/2 flex size-12 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border-2 border-fire bg-background/90 shadow-fire">
+          <ChevronLeft className="size-5 text-fire" />
+          <ChevronRight className="size-5 text-fire" />
+        </div>
+      </div>
+      <span className="absolute start-3 top-3 rounded-full bg-background/80 px-3 py-1 text-xs font-black uppercase tracking-wider text-muted-foreground backdrop-blur">{lang === "ar" ? "قبل" : "Before"}</span>
+      <span className="absolute end-3 top-3 rounded-full bg-primary px-3 py-1 text-xs font-black uppercase tracking-wider text-primary-foreground shadow-fire">{lang === "ar" ? "بعد" : "After"}</span>
+    </div>
+  );
+}
+
+function BodyCalculator({ t, lang, goal, wa }: { t: typeof copy.ar; lang: Lang; goal: Goal; wa: (text: string) => string }) {
+  const [weight, setWeight] = useState(80);
+  const [height, setHeight] = useState(175);
+  const [age, setAge] = useState(25);
+  const [gender, setGender] = useState<"male" | "female">("male");
+  const [activity, setActivity] = useState(1.55);
+
+  const bmi = useMemo(() => {
+    const h = height / 100;
+    return h > 0 ? weight / (h * h) : 0;
+  }, [weight, height]);
+
+  const bmiLabel = bmi < 18.5 ? t.calcBmiUnder : bmi < 25 ? t.calcBmiNormal : bmi < 30 ? t.calcBmiOver : t.calcBmiObese;
+  const bmiColor = bmi < 18.5 ? "text-steel" : bmi < 25 ? "text-gold" : bmi < 30 ? "text-fire" : "text-destructive";
+
+  const bmr = useMemo(() => {
+    return gender === "male"
+      ? 10 * weight + 6.25 * height - 5 * age + 5
+      : 10 * weight + 6.25 * height - 5 * age - 161;
+  }, [weight, height, age, gender]);
+
+  const maintenance = Math.round(bmr * activity);
+  const target = goal === "cut" ? Math.round(maintenance - 500) : Math.round(maintenance + 350);
+  const protein = Math.round(weight * (goal === "cut" ? 2.2 : 2.0));
+
+  const activities: Array<{ value: number; label: string }> = [
+    { value: 1.2, label: t.calcSed },
+    { value: 1.375, label: t.calcLight },
+    { value: 1.55, label: t.calcMod },
+    { value: 1.725, label: t.calcHard },
+    { value: 1.9, label: t.calcAthlete },
+  ];
+
+  const waMessage = lang === "ar"
+    ? `حسبت نفسي على الموقع:\n• الوزن: ${weight} كجم\n• الطول: ${height} سم\n• العمر: ${age}\n• النوع: ${gender === "male" ? "ذكر" : "أنثى"}\n• الهدف: ${goal === "cut" ? "تنشيف" : "تضخيم"}\n• BMI: ${bmi.toFixed(1)} (${bmiLabel})\n• سعرات الحفاظ: ${maintenance}\n• سعرات الهدف: ${target}\n• البروتين: ${protein} جم\nعايز أبدأ، رشحلي الباقة المناسبة.`
+    : `My Body Hack calculator result:\n• Weight: ${weight} kg\n• Height: ${height} cm\n• Age: ${age}\n• Gender: ${gender}\n• Goal: ${goal}\n• BMI: ${bmi.toFixed(1)} (${bmiLabel})\n• Maintenance: ${maintenance} kcal\n• Target: ${target} kcal\n• Protein: ${protein} g\nReady to start — please recommend my plan.`;
+
+  return (
+    <div className="clip-sport border border-fire/50 bg-card p-6 shadow-fire md:p-8">
+      <SectionTitle kicker={t.calcKicker} title={t.calcTitle} subtitle={t.calcSub} />
+      <div className="mt-8 grid gap-8 lg:grid-cols-[1.1fr_1fr]">
+        <div className="space-y-5">
+          <CalcSlider label={t.calcWeight} value={weight} setValue={setWeight} min={40} max={180} suffix="kg" />
+          <CalcSlider label={t.calcHeight} value={height} setValue={setHeight} min={140} max={210} suffix="cm" />
+          <CalcSlider label={t.calcAge} value={age} setValue={setAge} min={14} max={70} suffix="" />
+          <div>
+            <p className="mb-2 text-sm font-bold text-muted-foreground">{t.calcGender}</p>
+            <div className="grid grid-cols-2 gap-2">
+              {(["male", "female"] as const).map((g) => (
+                <button key={g} onClick={() => setGender(g)} className={`rounded-lg border px-4 py-3 text-sm font-bold transition ${gender === g ? "border-fire bg-primary text-primary-foreground shadow-fire" : "border-border bg-background hover:border-fire"}`}>
+                  {g === "male" ? t.calcMale : t.calcFemale}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div>
+            <p className="mb-2 text-sm font-bold text-muted-foreground">{t.calcActivity}</p>
+            <div className="grid grid-cols-5 gap-2">
+              {activities.map((a) => (
+                <button key={a.value} onClick={() => setActivity(a.value)} className={`rounded-lg border px-2 py-3 text-xs font-bold transition ${activity === a.value ? "border-fire bg-primary text-primary-foreground shadow-fire" : "border-border bg-background hover:border-fire"}`}>
+                  {a.label}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+        <div className="grid grid-cols-2 gap-4">
+          <ResultCard icon={Activity} label={t.calcBmi} value={bmi.toFixed(1)} accent={bmiColor} note={bmiLabel} />
+          <ResultCard icon={Flame} label={t.calcMaint} value={`${maintenance}`} accent="text-gold" note="kcal" />
+          <ResultCard icon={Target} label={t.calcTarget} value={`${target}`} accent="text-fire" note={`kcal · ${goal === "cut" ? t.cut : t.bulk}`} />
+          <ResultCard icon={Drumstick} label={t.calcProtein} value={`${protein}`} accent="text-platinum" note="g / day" />
+          <a href={wa(waMessage)} target="_blank" rel="noreferrer" className="col-span-2 inline-flex items-center justify-center gap-2 rounded-full bg-primary px-6 py-4 font-bold text-primary-foreground shadow-fire transition hover:scale-[1.02]">
+            <Send className="size-5" /> {t.calcSendWa}
+          </a>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function CalcSlider({ label, value, setValue, min, max, suffix }: { label: string; value: number; setValue: (v: number) => void; min: number; max: number; suffix: string }) {
+  return (
+    <label className="block">
+      <div className="mb-2 flex items-center justify-between">
+        <span className="text-sm font-bold text-muted-foreground">{label}</span>
+        <span className="font-display text-2xl text-fire">{value}<span className="ms-1 text-xs text-muted-foreground">{suffix}</span></span>
+      </div>
+      <input type="range" min={min} max={max} value={value} onChange={(e) => setValue(Number(e.target.value))} className="w-full accent-[var(--color-fire)]" />
+    </label>
+  );
+}
+
+function ResultCard({ icon: Icon, label, value, accent, note }: { icon: typeof Activity; label: string; value: string; accent: string; note: string }) {
+  return (
+    <div className="rounded-xl border border-border bg-background/60 p-4">
+      <div className="flex items-center gap-2 text-xs font-bold uppercase text-muted-foreground">
+        <Icon className="size-4 text-fire" /> {label}
+      </div>
+      <p className={`mt-2 font-display text-4xl leading-none ${accent}`}>{value}</p>
+      <p className="mt-1 text-xs text-muted-foreground">{note}</p>
+    </div>
+  );
+}
+
+function ComparisonTable({ t, lang, recommended }: { t: typeof copy.ar; lang: Lang; recommended: PackageName }) {
+  const rows: Array<{ ar: string; en: string; values: Record<PackageName, string | boolean> }> = [
+    { ar: "متابعة", en: "Follow-up", values: { Starter: lang === "ar" ? "أسبوعية" : "Weekly", Silver: lang === "ar" ? "مرتين/أسبوع" : "2x / week", Gold: lang === "ar" ? "يومية" : "Daily", Platinum: lang === "ar" ? "يومية + كول" : "Daily + calls" } },
+    { ar: "خطة تمرين مخصصة", en: "Custom workout", values: { Starter: true, Silver: true, Gold: true, Platinum: true } },
+    { ar: "نظام غذائي محسوب", en: "Calculated diet", values: { Starter: false, Silver: true, Gold: true, Platinum: true } },
+    { ar: "خطة مكملات", en: "Supplement plan", values: { Starter: false, Silver: false, Gold: true, Platinum: true } },
+    { ar: "تقارير قياسات دورية", en: "Progress reports", values: { Starter: false, Silver: false, Gold: true, Platinum: true } },
+    { ar: "دعم واتساب 24/7", en: "24/7 WhatsApp support", values: { Starter: false, Silver: false, Gold: false, Platinum: true } },
+    { ar: "مكالمات فيديو", en: "Video calls", values: { Starter: false, Silver: false, Gold: false, Platinum: true } },
+    { ar: "تعديل الخطة المستمر", en: "Plan updates", values: { Starter: lang === "ar" ? "شهري" : "Monthly", Silver: lang === "ar" ? "أسبوعي" : "Weekly", Gold: lang === "ar" ? "مستمر" : "Continuous", Platinum: lang === "ar" ? "مستمر" : "Continuous" } },
+    { ar: "مناسب لـ", en: "Best for", values: { Starter: lang === "ar" ? "مبتدئ" : "Beginner", Silver: lang === "ar" ? "ملتزم" : "Committed", Gold: lang === "ar" ? "نتيجة سريعة" : "Fast result", Platinum: lang === "ar" ? "متابعة قصوى" : "Max support" } },
+  ];
+  const plans: PackageName[] = ["Starter", "Silver", "Gold", "Platinum"];
+
+  return (
+    <div>
+      <SectionTitle kicker={t.cmpKicker} title={t.cmpTitle} subtitle={t.cmpSub} />
+      <div className="mt-8 overflow-x-auto rounded-2xl border border-border bg-card shadow-fire">
+        <table className="w-full min-w-[640px] text-sm">
+          <thead>
+            <tr className="border-b border-border bg-background/40">
+              <th className="p-4 text-start font-bold text-muted-foreground">{t.cmpFeature}</th>
+              {plans.map((p) => (
+                <th key={p} className={`p-4 font-display text-2xl uppercase ${p === recommended ? "bg-primary/15 text-fire" : ""}`}>
+                  {p}
+                  {p === recommended && <span className="ms-2 align-middle text-xs"><Sparkles className="inline size-4" /></span>}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((row) => (
+              <tr key={row.en} className="border-b border-border/60">
+                <td className="p-4 font-bold">{lang === "ar" ? row.ar : row.en}</td>
+                {plans.map((p) => {
+                  const v = row.values[p];
+                  return (
+                    <td key={p} className={`p-4 text-center ${p === recommended ? "bg-primary/10" : ""}`}>
+                      {typeof v === "boolean" ? (
+                        v ? <Check className="mx-auto size-5 text-fire" /> : <X className="mx-auto size-5 text-muted-foreground/50" />
+                      ) : (
+                        <span className="text-foreground">{v}</span>
+                      )}
+                    </td>
+                  );
+                })}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
+function FAQ({ t, lang }: { t: typeof copy.ar; lang: Lang }) {
+  const items = [
+    { q: { ar: "هل في ضمان للنتيجة؟", en: "Is the result guaranteed?" }, a: { ar: "النتيجة مضمونة لو التزمت بالخطة. لو ملتزم 100% ومش شايف فرق خلال أول شهر، بنعدل الخطة كاملة على حسابنا.", en: "Yes — if you commit fully to the plan. If you stay 100% consistent for the first month with no visible progress, we rebuild the plan free of charge." } },
+    { q: { ar: "كم كيلو ممكن أنزل في الشهر؟", en: "How many kilos can I lose per month?" }, a: { ar: "المعدل الصحي من 3 لـ 6 كيلو في الشهر حسب الوزن الحالي ومستوى الالتزام، والنزول بيكون دهون مش عضلات.", en: "A healthy rate is 3–6 kg per month depending on your starting weight and consistency — losing fat, not muscle." } },
+    { q: { ar: "هل لازم أشترك في جيم؟", en: "Do I need a gym membership?" }, a: { ar: "لأ، فيه خطط للمنزل بأدوات بسيطة أو من غير أدوات. وقت الاشتراك بنسألك عن إمكانياتك ونظبط الخطة عليها.", en: "No. We offer home plans with minimal or no equipment. During signup we ask about your setup and tailor the workout accordingly." } },
+    { q: { ar: "هل في خطط للنباتيين أو أكل معين؟", en: "Do you support vegetarian or special diets?" }, a: { ar: "أيوة، الخطة بتتفصل حسب أكلك المفضل، حساسيتك، وميزانيتك. فيه عملاء نباتيين، كيتو، ومتقطع كل خطة على راحتها.", en: "Yes — plans are customized to your food preferences, allergies, and budget. We support vegetarian, keto, intermittent fasting, and more." } },
+    { q: { ar: "إيه الفرق بين الباقات؟", en: "What's the difference between plans?" }, a: { ar: "الفرق الأساسي في مستوى المتابعة، التفاصيل، والمكملات. شوف جدول المقارنة فوق هتلاقي كل حاجة مفصلة.", en: "The main differences are follow-up frequency, level of detail, and supplement guidance. Check the comparison table above for the full breakdown." } },
+    { q: { ar: "إمتى بتوصلني الخطة بعد ما أدفع؟", en: "When do I get my plan after paying?" }, a: { ar: "خلال 48 ساعة من تأكيد الدفع وإرسال الفورم بالكامل، بتوصلك الخطة + فيديو شرح على الواتساب.", en: "Within 48 hours of confirmed payment and a completed form, you receive your plan plus a walk-through video on WhatsApp." } },
+    { q: { ar: "هل أقدر أغير الباقة بعد ما أبدأ؟", en: "Can I upgrade my plan later?" }, a: { ar: "أيوة، تقدر تترقى لباقة أعلى في أي وقت وبتدفع الفرق فقط. النزول لباقة أقل بعد نهاية الشهر الحالي.", en: "Yes — upgrade anytime and only pay the difference. Downgrades take effect at the end of your current month." } },
+    { q: { ar: "هل بياناتي محفوظة؟", en: "Is my data private?" }, a: { ar: "بياناتك وصور قياساتك تظل بيني وبينك بس، وما بتتشارك مع حد إلا بإذنك الكتابي.", en: "Your data and progress photos stay strictly between you and your coach, and are never shared without your written consent." } },
+  ];
+
+  return (
+    <div>
+      <SectionTitle kicker={t.faqKicker} title={t.faqTitle} subtitle={t.faqSub} />
+      <div className="mx-auto mt-8 max-w-3xl rounded-2xl border border-fire/40 bg-card p-2 shadow-fire md:p-4">
+        <Accordion type="single" collapsible className="w-full">
+          {items.map((item, i) => (
+            <AccordionItem key={i} value={`item-${i}`} className="border-b border-border/60 last:border-b-0">
+              <AccordionTrigger className="px-3 py-5 text-start text-base font-bold hover:no-underline md:text-lg">
+                <span className="flex items-center gap-3">
+                  <HelpCircle className="size-5 shrink-0 text-fire" />
+                  {lang === "ar" ? item.q.ar : item.q.en}
+                </span>
+              </AccordionTrigger>
+              <AccordionContent className="px-3 pb-5 text-sm leading-relaxed text-muted-foreground md:text-base">
+                {lang === "ar" ? item.a.ar : item.a.en}
+              </AccordionContent>
+            </AccordionItem>
+          ))}
+        </Accordion>
+      </div>
+    </div>
+  );
+}
+
