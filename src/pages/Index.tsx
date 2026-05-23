@@ -615,6 +615,10 @@ function Index() {
         )}
       </section>
 
+      <section id="faq" className="mx-auto max-w-7xl px-5 py-14">
+        <FAQ t={t} lang={lang} />
+      </section>
+
       <section id="contact" className="mx-auto max-w-7xl px-5 py-14">
         <div className="clip-sport border border-fire/50 bg-card p-8 text-center shadow-fire">
           <SectionTitle kicker="Book Your Transformation" title={t.contactTitle} subtitle={t.contactSub} compact />
