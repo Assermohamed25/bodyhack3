@@ -121,7 +121,7 @@ const copy = {
     finalCta: "ابدأ تحولك اليوم",
   },
   en: {
-    nav: ["Results", "Plans", "Payments", "Reviews", "Contact"],
+    nav: ["Results", "Calculator", "Plans", "Compare", "Payments", "Reviews", "FAQ", "Contact"],
     whatsapp: "WhatsApp",
     lang: "عربي",
     heroKicker: "Pro coaching · Daily follow-up · Real results",
